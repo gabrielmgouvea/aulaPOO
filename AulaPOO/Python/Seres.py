@@ -34,5 +34,3 @@ Curso: {self.curso}
 
 ser1 = Estudante('João Gabriel', 25, '1.75', 'Onívoro', '12345678900', 'Masculino', 'Engenharia de Software')
 ser1.__str__()
-
-print(ser1.nome)
