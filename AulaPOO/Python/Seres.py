@@ -17,7 +17,7 @@ class Estudante(Humano):
         super().__init__(nome, idade, altura, alimentacao, cpf, genero)
         self.curso = curso
 
-    def __str__(self): #Questão 2
+    def __str__(self):
             print(f"""
 Nome: {self.nome}
 Idade: {self.idade}
