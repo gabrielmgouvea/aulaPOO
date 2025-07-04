@@ -1,0 +1,117 @@
+import random
+
+class Personagem:
+    def __init__(self, nome, vida, ataque, defesa):
+        self._nome = nome
+        self._vida = vida
+        self._ataque = ataque
+        self._defesa = defesa
+
+    @staticmethod
+    def rolar_dados(faces):
+        return random.randint(1, faces)
+    
+    def __str__(self):
+        return f"Nome: {self._nome} | Vida: {self._vida} | Ataque: {self._ataque} | Defesa: {self._defesa}"
+    
+    def atacar(self, alvo):
+        dano_causado = self._ataque - alvo._defesa
+        if dano_causado <= 0:
+            print("Você nao causou dano com esse ataque.")
+        else:
+            print(f"Voce deu {dano_causado} de dano em {alvo}")
+            alvo.receber_dano(dano_causado)
+        
+    def receber_dano(self, dano):
+        self._vida = self._vida - dano
+        return self._vida
+    
+    def esta_vivo(self):
+        if self._vida > 0:
+            return True
+        else:
+            return False
+    
+    def usar_habilidade_especial(self, alvo):
+        pass
+
+class Guerreiro(Personagem):
+    def usar_habilidade_especial(self, alvo):
+        ataque_furioso = (self._ataque * 1.5) - alvo._defesa
+        if ataque_furioso <= 0:
+            print("Você nao causou dano com esse ataque.")
+        else:
+            print(f"Voce deu {ataque_furioso} de dano em {alvo} com seu ataque furioso!")
+            alvo.receber_dano(ataque_furioso)
+    
+    @classmethod
+    def criar_guerreiro_padrao(cls, nome):
+        return cls(nome=nome, vida=120, ataque=15, defesa=10)
+
+class Mago(Personagem):
+    def __init__(self, nome, vida, ataque, defesa, mana):
+        super().__init__(nome, vida, ataque, defesa)
+        self._mana = mana
+
+    def usar_habilidade_especial(self, alvo):
+        fire_ball = 40
+        if self._mana <= 19:
+            print("Você nao tem mana suficiente pra esse ataque!")
+        else:
+            print(f"Voce deu {fire_ball} de dano em {alvo} com sua bola de fogo!")
+            alvo.receber_dano(fire_ball)
+            self._mana = self._mana - 20
+
+class Arqueiro(Personagem):
+    def usar_habilidade_especial(self, alvo):
+        resultado_dado = self.rolar_dados(20)
+        dano_flecha_precisa = 20
+        if resultado_dado == 20:
+            dano_flecha_precisa = (self._ataque * 3.0) - alvo._defesa
+            print(f"Dado: {resultado_dado}\nAcerto critico! {dano_flecha_precisa} pontos de dano!")
+            alvo.receber_dano(dano_flecha_precisa)
+        elif resultado_dado >= 11 and resultado_dado <= 19:
+            dano_flecha_precisa = (self._ataque * 2.0) - alvo._defesa
+            print(f"Dado: {resultado_dado}\nAcerto preciso! {dano_flecha_precisa} pontos de dano!")
+            alvo.receber_dano(dano_flecha_precisa)
+        else:
+            dano_flecha_precisa = self._ataque - alvo._defesa
+            print(f"Dado: {resultado_dado}\nAcerto normal! {dano_flecha_precisa} pontos de dano!")
+            alvo.receber_dano(dano_flecha_precisa)
+
+def iniciar_batalha(p1: Personagem, p2: Personagem):
+    turno = 1
+    print("-----A batalha vai começar!-----")
+    while p1.esta_vivo() and p2.esta_vivo():
+        print(f"\n---Turno: {turno}---")
+        p1.atacar(p2)
+
+        if p2.esta_vivo():
+            p2.atacar(p1)
+        turno += 1
+
+    print("\n-----FIM DA BATALHA-----")
+    vencedor = p1 if p1.esta_vivo() else p2
+    print(f"O vencedor é {vencedor._nome}!")
+
+garen = Guerreiro(nome="Garen", vida=130, ataque=18, defesa=12)
+
+darius = Guerreiro.criar_guerreiro_padrao(nome="Darius")
+    
+veigar = Mago(nome="Veigar", vida=80, ataque=20, defesa=5, mana=100)
+ashe = Arqueiro(nome="Ashe", vida=90, ataque=17, defesa=7)
+    
+print("--- PERSONAGENS PRONTOS ---")
+print(garen)
+print(darius)
+print(veigar)
+print(ashe)
+    
+iniciar_batalha(garen, veigar)
+    
+print("\n\n--- DEMONSTRANDO HABILIDADES ESPECIAIS ---")
+darius._vida = 120
+ashe._vida = 90
+    
+darius.usar_habilidade_especial(ashe)
+print(ashe)
